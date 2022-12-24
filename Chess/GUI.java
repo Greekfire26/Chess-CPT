@@ -1,8 +1,6 @@
 package Chess;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -15,10 +13,11 @@ public class GUI {
     private static JLabel pieceLabel;
     private static HashMap<String, ImageIcon> images;
     public static int screenSize = 768;
-    public static int squareSize = 768 / 8;
+    public static int squareSize = screenSize / 8;
 
     public GUI() {
         frame = new JFrame();
+        frame.setUndecorated(true);
         frame.setTitle("Chess Game - CS CPT");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(screenSize, screenSize);
@@ -27,7 +26,7 @@ public class GUI {
         frame.setVisible(true);
 
         panel = new chessPanel();
-        panel.setLayout(new GridLayout(8, 8, 0, 0));
+        panel.setLayout(null);
         panel.setBackground(Color.DARK_GRAY);
         frame.add(panel, BorderLayout.CENTER);
         frame.pack();
@@ -52,6 +51,7 @@ public class GUI {
                 if (!piece.equals("--")) {
                     Image image = images.get(piece).getImage();
                     pieceLabel = new JLabel(new ImageIcon(image.getScaledInstance(squareSize, squareSize,  java.awt.Image.SCALE_SMOOTH)));
+                    pieceLabel.setBounds(c * squareSize, r * squareSize, squareSize, squareSize);
                     panel.add(pieceLabel);
                 }
                 else {

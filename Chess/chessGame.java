@@ -45,12 +45,6 @@ public class chessGame {
 
                     if (clicks.size() == 2){
 
-                        for (Component component : chessPanel.getComponents()) {
-                            if (component instanceof JLabel && component.getY() > 513){
-                                chessPanel.remove(component);
-                            }
-                        }
-                        GUI.drawPieces();
                         chessPanel.revalidate();
                     }
                 }
