@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class GUI {
 
     public static JFrame frame;
-    private static JPanel panel;
+    public static JPanel panel;
     private static String[] pieces;
     private static JLabel pieceLabel;
     private static HashMap<String, ImageIcon> images;
