@@ -1,7 +1,6 @@
 package Chess;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.util.HashMap;
 
@@ -18,8 +17,6 @@ public class GUI {
     public GUI() {
         frame = new JFrame();
         frame.setUndecorated(true);
-        frame.setTitle("Chess Game - CS CPT");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(screenSize, screenSize);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);

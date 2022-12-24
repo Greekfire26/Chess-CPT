@@ -31,6 +31,7 @@ public class chessGame {
     private void play() {
         ArrayList<Integer> selected_square = new ArrayList<>();
         ArrayList<ArrayList<Integer>> clicks = new ArrayList<>();
+        whiteToMove = true;
         ArrayList<Move> validMoves = getValidMoves();
         moveMade = false;
 
@@ -58,7 +59,6 @@ public class chessGame {
                     if (clicks.size() == 2){
                         Move move = new Move(clicks.get(0), clicks.get(1));
                         System.out.println(move.getChessNotation());
-
                         if (validMoves.contains(move)){
                             Move.makeMove(move);
                             moveMade = true;
@@ -93,28 +93,26 @@ public class chessGame {
         for (int r = 0; r < board.length; r++){
             for (int c = 0; c < board[r].length; c++){
                 turn = board[r][c].charAt(0);
-
                 if ((turn == 'w' && whiteToMove) || (turn == 'b' && !whiteToMove)){
                     piece = board[r][c].charAt(1);
 
                     switch(piece){
-                        case 'P':
-                            System.out.println("Pawn Move");
+                        case 'P': getPawnMoves(r, c, moves);
 
                         case 'N':
-                            System.out.println("Knight Move");
+
 
                         case 'B':
-                            System.out.println("Bishop Move");
 
-                        case 'R':
-                            System.out.println("Rook Move");
+
+                        case 'R': getRookMoves(r, c, moves);
+
 
                         case 'Q':
-                            System.out.println("Queen Move");
+
 
                         case 'K':
-                            System.out.println("Knight Move");
+
                     }
 
                 }
@@ -122,5 +120,132 @@ public class chessGame {
         }
 
         return moves;
+    }
+
+    private void getPawnMoves(int r, int c, ArrayList<Move> moves){
+        ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
+
+        if (whiteToMove){
+            if (board[r - 1][c].equals("--")){
+                tempStart = new ArrayList<>();
+                tempStart.add(r); tempStart.add(c);
+
+                tempEnd = new ArrayList<>();
+                tempEnd.add(r - 1); tempEnd.add(c);
+
+                moves.add(new Move(tempStart, tempEnd));
+
+                if (r == 6 && board[r - 2][c].equals("--")){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r - 2); tempEnd.add(c);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+            if (c - 1 >= 0){
+                if (board[r - 1][c - 1].charAt(0) == 'b'){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r - 1); tempEnd.add(c - 1);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+            if (c + 1 <= 7){
+                if (board[r - 1][c + 1].charAt(0) == 'b'){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r - 1); tempEnd.add(c + 1);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+        }
+        else {
+            if (board[r + 1][c].equals("--")){
+                tempStart = new ArrayList<>();
+                tempStart.add(r); tempStart.add(c);
+
+                tempEnd = new ArrayList<>();
+                tempEnd.add(r + 1); tempEnd.add(c);
+
+                moves.add(new Move(tempStart, tempEnd));
+
+                if (r == 1 && board[r + 2][c].equals("--")){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r + 2); tempEnd.add(c);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+            if (c - 1 >= 0){
+                if (board[r + 1][c - 1].charAt(0) == 'b'){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r + 1); tempEnd.add(c - 1);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+            if (c + 1 <= 7){
+                if (board[r + 1][c + 1].charAt(0) == 'b'){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r + 1); tempEnd.add(c + 1);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+        }
+    }
+
+    private void getRookMoves(int r, int c, ArrayList<Move> moves){
+        ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
+        int[][] directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+        char enemyColor;
+        int endRow, endCol;
+        String endPiece;
+
+        if (whiteToMove){enemyColor = 'b';}
+        else {enemyColor = 'w';}
+
+        for (int[] d: directions){
+            for (int i = 1; i <= 8; i++){
+                endRow = r + d[0] * i;
+                endCol = c + d[1] * i;
+
+                if (endRow <= 0 && endRow < 8 && endCol <= 0 && endCol < 8){
+                    endPiece = board[endRow][endCol];
+
+                    if (endPiece.equals("--") || endPiece.charAt(0) == enemyColor){
+                        tempStart = new ArrayList<>();
+                        tempStart.add(r); tempStart.add(c);
+
+                        tempEnd = new ArrayList<>();
+                        tempEnd.add(endRow); tempEnd.add(endCol);
+
+                        moves.add(new Move(tempStart, tempEnd));
+
+                        if (endPiece.charAt(0) == enemyColor){break;}
+                    }
+                    else {break;}
+                }
+                else {break;}
+            }
+        }
     }
 }
