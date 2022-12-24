@@ -1,5 +1,6 @@
 package Chess;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Move {
@@ -16,10 +17,9 @@ public class Move {
     private HashMap<String, Integer> filesToCols = new HashMap();
     private HashMap<Integer, String> colsToFiles = new HashMap();
 
-    public Move(int[] startSq, int[] endSq){
-        startRow = startSq[0]; startCol = startSq[1];
-        System.out.println("Start square" + startSq[0] + " " + startSq[1]);
-        endRow = endSq[0]; endCol = endSq[1];
+    public Move(ArrayList<Integer> startSq, ArrayList<Integer> endSq){
+        startRow = startSq.get(0); startCol = startSq.get(1);
+        endRow = endSq.get(0); endCol = endSq.get(1);
         movedPiece = chessGame.board[startRow][startCol];
         capturedPiece = chessGame.board[endRow][endCol];
 
@@ -41,7 +41,7 @@ public class Move {
         return colsToFiles.get(c) + rowsToRanks.get(r);
     }
 
-    void fillReferenceTables(){ // this is cancer, deal with it
+    void fillReferenceTables(){ // ik this is cancer, deal with it
         ranksToRows.put("1", 7);
         ranksToRows.put("2", 6);
         ranksToRows.put("3", 5);
