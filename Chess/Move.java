@@ -11,6 +11,7 @@ public class Move {
     private int endCol;
     private String movedPiece;
     private String capturedPiece;
+    private int moveID;
 
     private HashMap<String, Integer> ranksToRows = new HashMap();
     private HashMap<Integer, String> rowsToRanks = new HashMap();
@@ -22,6 +23,7 @@ public class Move {
         endRow = endSq.get(0); endCol = endSq.get(1);
         movedPiece = chessGame.board[startRow][startCol];
         capturedPiece = chessGame.board[endRow][endCol];
+        moveID = startRow * 1000 + startCol * 100 + endRow * 10 + endCol;
 
         fillReferenceTables();
     }
@@ -29,8 +31,16 @@ public class Move {
     public static void makeMove(Move move){
         chessGame.board[move.startRow][move.startCol] = "--";
         chessGame.board[move.endRow][move.endCol] = move.movedPiece;
-        chessGame.movelist.add(move);
+        chessGame.moveList.add(move);
         chessGame.whiteToMove = !chessGame.whiteToMove;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if (object instanceof Move){
+            return ((Move) object).moveID == this.moveID;
+        }
+        return false;
     }
 
     public String getChessNotation(){
