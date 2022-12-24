@@ -58,10 +58,27 @@ public class chessGame {
                         Move.makeMove(move);
                         selected_square.clear();
                         clicks.clear();
+
+                        for (int i = 0; i < 8; i++){
+                            for (int j = 0; j < 8; j++){
+                                System.out.print(board[i][j] + " ");
+                            }
+                            System.out.println();
+                        }
+
+                        for (Component component : GUI.panel.getComponents()) {
+                            if (component instanceof JLabel){
+                                GUI.panel.remove(component);
+                            }
+                        }
+
+                        GUI.drawPieces();
+
+                        GUI.panel.revalidate();
+                        GUI.panel.repaint();
                     }
                 }
             }
         });
-
     }
 }
