@@ -11,6 +11,8 @@ public class chessGame {
     public static String[][] board;
     public static boolean whiteToMove;
     public static ArrayList<Move> moveList = new ArrayList<>();
+    public static ArrayList<Move> validMoves;
+    public static ArrayList<ArrayList<Integer>> clicks;
     boolean moveMade;
 
     public chessGame() {
@@ -30,9 +32,9 @@ public class chessGame {
 
     private void play() {
         ArrayList<Integer> selected_square = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> clicks = new ArrayList<>();
+        clicks = new ArrayList<>();
         whiteToMove = true;
-        ArrayList<Move> validMoves = getValidMoves();
+        validMoves = getValidMoves();
         moveMade = false;
 
         GUI.frame.addMouseListener(new MouseAdapter() {
@@ -73,9 +75,19 @@ public class chessGame {
 
                             GUI.panel.revalidate();
                             GUI.panel.repaint();
+
+                            selected_square.clear();
+                            clicks.clear();
                         }
-                        selected_square.clear();
-                        clicks.clear();
+                        else {
+                            clicks.clear();
+                            clicks.add(selected_square);
+                        }
+                    }
+
+                    if (moveMade){
+                        validMoves = getValidMoves();
+                        moveMade = false;
                     }
                 }
             }
@@ -93,28 +105,17 @@ public class chessGame {
         for (int r = 0; r < board.length; r++){
             for (int c = 0; c < board[r].length; c++){
                 turn = board[r][c].charAt(0);
-                if ((turn == 'w' && whiteToMove) || (turn == 'b' && !whiteToMove)){
+                if ((turn == 'w' && whiteToMove) || (turn == 'b' && whiteToMove == false)){
                     piece = board[r][c].charAt(1);
 
                     switch(piece){
-                        case 'P': getPawnMoves(r, c, moves);
-
-                        case 'N':
-
-
-                        case 'B':
-
-
-                        case 'R': getRookMoves(r, c, moves);
-
-
-                        case 'Q':
-
-
-                        case 'K':
-
+                        case 'P': getPawnMoves(r, c, moves); break;
+                        case 'N': getKnightMoves(r, c, moves); break;
+                        case 'B': getBishopMoves(r, c, moves); break;
+                        case 'R': getRookMoves(r, c, moves); break;
+                        case 'Q': getQueenMoves(r, c, moves); break;
+                        case 'K': getKingMoves(r, c, moves); break;
                     }
-
                 }
             }
         }
@@ -216,22 +217,30 @@ public class chessGame {
     private void getRookMoves(int r, int c, ArrayList<Move> moves){
         ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
         int[][] directions = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
-        char enemyColor;
+        char enemy;
         int endRow, endCol;
         String endPiece;
 
-        if (whiteToMove){enemyColor = 'b';}
-        else {enemyColor = 'w';}
+        if (whiteToMove){enemy = 'b';}
+        else {enemy = 'w';}
 
         for (int[] d: directions){
-            for (int i = 1; i <= 8; i++){
+            for (int i = 1; i < 8; i++){
                 endRow = r + d[0] * i;
                 endCol = c + d[1] * i;
 
-                if (endRow <= 0 && endRow < 8 && endCol <= 0 && endCol < 8){
+                if ((endRow >= 0 && endRow < 8) && (endCol >= 0 && endCol < 8)){
                     endPiece = board[endRow][endCol];
+                    if (endPiece.equals("--")){
+                        tempStart = new ArrayList<>();
+                        tempStart.add(r); tempStart.add(c);
 
-                    if (endPiece.equals("--") || endPiece.charAt(0) == enemyColor){
+                        tempEnd = new ArrayList<>();
+                        tempEnd.add(endRow); tempEnd.add(endCol);
+
+                        moves.add(new Move(tempStart, tempEnd));
+                    }
+                    else if (endPiece.charAt(0) == enemy){
                         tempStart = new ArrayList<>();
                         tempStart.add(r); tempStart.add(c);
 
@@ -240,11 +249,121 @@ public class chessGame {
 
                         moves.add(new Move(tempStart, tempEnd));
 
-                        if (endPiece.charAt(0) == enemyColor){break;}
+                        break;
                     }
                     else {break;}
                 }
                 else {break;}
+            }
+        }
+    }
+
+    private void getBishopMoves(int r, int c, ArrayList<Move> moves){
+        ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
+        int[][] directions = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        char enemy;
+        int endRow, endCol;
+        String endPiece;
+
+        if (whiteToMove){enemy = 'b';}
+        else {enemy = 'w';}
+
+        for (int[] d: directions){
+            for (int i = 1; i < 8; i++){
+                endRow = r + d[0] * i;
+                endCol = c + d[1] * i;
+
+                if ((endRow >= 0 && endRow < 8) && (endCol >= 0 && endCol < 8)){
+                    endPiece = board[endRow][endCol];
+
+                    if (endPiece.equals("--")){
+                        tempStart = new ArrayList<>();
+                        tempStart.add(r); tempStart.add(c);
+
+                        tempEnd = new ArrayList<>();
+                        tempEnd.add(endRow); tempEnd.add(endCol);
+
+                        moves.add(new Move(tempStart, tempEnd));
+                    }
+                    else if (endPiece.charAt(0) == enemy){
+                        tempStart = new ArrayList<>();
+                        tempStart.add(r); tempStart.add(c);
+
+                        tempEnd = new ArrayList<>();
+                        tempEnd.add(endRow); tempEnd.add(endCol);
+
+                        moves.add(new Move(tempStart, tempEnd));
+
+                        break;
+                    }
+                    else {break;}
+                }
+                else {break;}
+            }
+        }
+    }
+
+    private void getKnightMoves(int r, int c, ArrayList<Move> moves){
+        ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
+        int[][] directions = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
+        char ally;
+        int endRow, endCol;
+        String endPiece;
+
+        if (whiteToMove){ally = 'w';}
+        else {ally = 'b';}
+
+        for (int d[]: directions){
+            endRow = r + d[0];
+            endCol = c + d[1];
+
+            if ((endRow >= 0 && endRow < 8) && (endCol >= 0 && endCol < 8)){
+                endPiece = board[endRow][endCol];
+
+                if (endPiece.charAt(0) != ally){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(endRow); tempEnd.add(endCol);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
+            }
+        }
+    }
+
+    private void getQueenMoves(int r, int c, ArrayList<Move> moves){
+        getRookMoves(r, c, moves);
+        getBishopMoves(r, c, moves);
+    }
+
+    private void getKingMoves(int r, int c, ArrayList<Move> moves){
+        ArrayList<Integer> tempStart; ArrayList<Integer> tempEnd;
+        int[][] directions = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        char ally;
+        int endRow, endCol;
+        String endPiece;
+
+        if (whiteToMove){ally = 'w';}
+        else {ally = 'b';}
+
+        for (int i = 0; i < 8; i++){
+            endRow = r + directions[i][0];
+            endCol = c + directions[i][1];
+
+            if ((endRow >= 0 && endRow < 8) && (endCol >= 0 && endCol < 8)){
+                endPiece = board[endRow][endCol];
+
+                if (endPiece.charAt(0) != ally){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(endRow); tempEnd.add(endCol);
+
+                    moves.add(new Move(tempStart, tempEnd));
+                }
             }
         }
     }
