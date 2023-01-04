@@ -1,8 +1,6 @@
 package Chess;
-//TODO:
 
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 public class cptMain {
 

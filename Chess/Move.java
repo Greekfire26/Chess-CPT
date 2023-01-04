@@ -7,8 +7,8 @@ public class Move {
 
     private int startRow;
     private int startCol;
-    private int endRow;
-    private int endCol;
+    public int endRow;
+    public int endCol;
     private String movedPiece;
     private String capturedPiece;
     private int moveID;
@@ -33,6 +33,16 @@ public class Move {
         chessGame.board[move.endRow][move.endCol] = move.movedPiece;
         chessGame.moveList.add(move);
         chessGame.whiteToMove = !chessGame.whiteToMove;
+
+        if (move.movedPiece.equals("wK")){
+            chessGame.wKingLoc[0] = move.endRow;
+            chessGame.wKingLoc[1] = move.endCol;
+        }
+
+        else if (move.movedPiece.equals("bK")){
+            chessGame.bKingLoc[0] = move.endRow;
+            chessGame.bKingLoc[1] = move.endCol;
+        }
     }
 
     @Override

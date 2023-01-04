@@ -14,6 +14,8 @@ public class chessGame {
     public static ArrayList<Move> validMoves;
     public static ArrayList<ArrayList<Integer>> clicks;
     boolean moveMade;
+    public static int[] wKingLoc;
+    public static int[] bKingLoc;
 
     public chessGame() {
         board = new String[][]{
@@ -36,6 +38,8 @@ public class chessGame {
         whiteToMove = true;
         validMoves = getValidMoves();
         moveMade = false;
+        wKingLoc = new int[]{7, 4};
+        bKingLoc = new int[]{0, 4};
 
         GUI.frame.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
@@ -95,7 +99,42 @@ public class chessGame {
     }
 
     private ArrayList<Move> getValidMoves(){
-        return getPossibleMoves();
+        ArrayList<Move> moves = getPossibleMoves();
+        ArrayList<Move> oppMoves;
+
+        for (int i = moves.size(); i > 0; i--){
+            Move.makeMove(moves.get(i));
+            whiteToMove = !whiteToMove;
+            if (inCheck()){
+                moves.remove(moves.get(i));
+            }
+            whiteToMove = !whiteToMove;
+            // undoMove()
+        }
+
+        return moves;
+    }
+
+    private boolean inCheck(){
+        if (whiteToMove){
+            return underAttack(wKingLoc[0], wKingLoc[1]);
+        }
+        else {
+            return underAttack(bKingLoc[0], bKingLoc[1]);
+        }
+    }
+
+    private boolean underAttack(int r, int c){
+        whiteToMove = !whiteToMove;
+        ArrayList<Move> oppMoves = getPossibleMoves();
+        whiteToMove = !whiteToMove;
+
+        for (int i = 0; i < oppMoves.size(); i++){
+            if ((oppMoves.get(i).endRow == r) && (oppMoves.get(i).endCol == c)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArrayList<Move> getPossibleMoves(){
