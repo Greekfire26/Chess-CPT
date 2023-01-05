@@ -45,6 +45,26 @@ public class Move {
         }
     }
 
+    public static void undoMove(){
+        if (chessGame.moveList.size() != 0){
+            Move move = chessGame.moveList.get(chessGame.moveList.size() - 1);
+            chessGame.moveList.remove(chessGame.moveList.size() - 1);
+            chessGame.board[move.startRow][move.startCol] = move.movedPiece;
+            chessGame.board[move.endRow][move.endCol] = move.capturedPiece;
+            chessGame.whiteToMove = !chessGame.whiteToMove;
+
+            if (move.movedPiece.equals("wK")){
+                chessGame.wKingLoc[0] = move.startRow;
+                chessGame.wKingLoc[1] = move.startCol;
+            }
+
+            else if (move.movedPiece.equals("bK")){
+                chessGame.bKingLoc[0] = move.startRow;
+                chessGame.bKingLoc[1] = move.startCol;
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object object){
         if (object instanceof Move){

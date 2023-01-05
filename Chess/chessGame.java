@@ -14,8 +14,8 @@ public class chessGame {
     public static ArrayList<Move> validMoves;
     public static ArrayList<ArrayList<Integer>> clicks;
     boolean moveMade;
-    public static int[] wKingLoc;
-    public static int[] bKingLoc;
+    public static int[] wKingLoc = {7, 4};
+    public static int[] bKingLoc = {0, 4};
 
     public chessGame() {
         board = new String[][]{
@@ -38,8 +38,6 @@ public class chessGame {
         whiteToMove = true;
         validMoves = getValidMoves();
         moveMade = false;
-        wKingLoc = new int[]{7, 4};
-        bKingLoc = new int[]{0, 4};
 
         GUI.frame.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
@@ -100,16 +98,15 @@ public class chessGame {
 
     private ArrayList<Move> getValidMoves(){
         ArrayList<Move> moves = getPossibleMoves();
-        ArrayList<Move> oppMoves;
 
-        for (int i = moves.size(); i > 0; i--){
+        for (int i = moves.size() - 1; i >= 0; i--){
             Move.makeMove(moves.get(i));
             whiteToMove = !whiteToMove;
             if (inCheck()){
                 moves.remove(moves.get(i));
             }
             whiteToMove = !whiteToMove;
-            // undoMove()
+            Move.undoMove();
         }
 
         return moves;
