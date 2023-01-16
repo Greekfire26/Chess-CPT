@@ -16,6 +16,9 @@ public class chessGame {
     boolean moveMade;
     public static int[] wKingLoc = {7, 4};
     public static int[] bKingLoc = {0, 4};
+    public static boolean checkmate = false;
+    public static boolean stalemate = false;
+    public static ArrayList<Integer> enpassantPossible = new ArrayList<>();
 
     public chessGame() {
         board = new String[][]{
@@ -63,25 +66,27 @@ public class chessGame {
                     if (clicks.size() == 2){
                         Move move = new Move(clicks.get(0), clicks.get(1));
                         System.out.println(move.getChessNotation());
-                        if (validMoves.contains(move)){
-                            Move.makeMove(move);
-                            moveMade = true;
+                        for (Move current_move: validMoves){
+                            if (move.equals(current_move)){
+                                Move.makeMove(current_move);
+                                moveMade = true;
 
-                            for (Component component : GUI.panel.getComponents()) {
-                                if (component instanceof JLabel){
-                                    GUI.panel.remove(component);
+                                for (Component component : GUI.panel.getComponents()) {
+                                    if (component instanceof JLabel){
+                                        GUI.panel.remove(component);
+                                    }
                                 }
+
+                                GUI.drawPieces();
+
+                                GUI.panel.revalidate();
+                                GUI.panel.repaint();
+
+                                selected_square.clear();
+                                clicks.clear();
                             }
-
-                            GUI.drawPieces();
-
-                            GUI.panel.revalidate();
-                            GUI.panel.repaint();
-
-                            selected_square.clear();
-                            clicks.clear();
                         }
-                        else {
+                        if (!moveMade) {
                             clicks.clear();
                             clicks.add(selected_square);
                         }
@@ -97,6 +102,7 @@ public class chessGame {
     }
 
     private ArrayList<Move> getValidMoves(){
+        ArrayList<Integer> tempEnPassantPossible = enpassantPossible;
         ArrayList<Move> moves = getPossibleMoves();
 
         for (int i = moves.size() - 1; i >= 0; i--){
@@ -109,6 +115,13 @@ public class chessGame {
             Move.undoMove();
         }
 
+        if (moves.size() == 0){
+            if (inCheck()){checkmate = true;}
+            else {stalemate = true;}
+        }
+        else {checkmate = false; stalemate = false;}
+
+        enpassantPossible = tempEnPassantPossible;
         return moves;
     }
 
@@ -192,6 +205,15 @@ public class chessGame {
 
                     moves.add(new Move(tempStart, tempEnd));
                 }
+                else if (enpassantPossible.size() == 2 && r - 1 == enpassantPossible.get(0) && c - 1 == enpassantPossible.get(1)){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r - 1); tempEnd.add(c - 1);
+
+                    moves.add(new Move(tempStart, tempEnd, true));
+                }
             }
             if (c + 1 <= 7){
                 if (board[r - 1][c + 1].charAt(0) == 'b'){
@@ -202,6 +224,15 @@ public class chessGame {
                     tempEnd.add(r - 1); tempEnd.add(c + 1);
 
                     moves.add(new Move(tempStart, tempEnd));
+                }
+                else if (enpassantPossible.size() == 2 && r - 1 == enpassantPossible.get(0) && c + 1 == enpassantPossible.get(1)){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r - 1); tempEnd.add(c + 1);
+
+                    moves.add(new Move(tempStart, tempEnd, true));
                 }
             }
         }
@@ -235,6 +266,15 @@ public class chessGame {
 
                     moves.add(new Move(tempStart, tempEnd));
                 }
+                else if (enpassantPossible.size() == 2 && r + 1 == enpassantPossible.get(0) && c - 1 == enpassantPossible.get(1)){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r + 1); tempEnd.add(c - 1);
+
+                    moves.add(new Move(tempStart, tempEnd, true));
+                }
             }
             if (c + 1 <= 7){
                 if (board[r + 1][c + 1].charAt(0) == 'b'){
@@ -245,6 +285,15 @@ public class chessGame {
                     tempEnd.add(r + 1); tempEnd.add(c + 1);
 
                     moves.add(new Move(tempStart, tempEnd));
+                }
+                else if (enpassantPossible.size() == 2 && r + 1 == enpassantPossible.get(0) && c + 1 == enpassantPossible.get(1)){
+                    tempStart = new ArrayList<>();
+                    tempStart.add(r); tempStart.add(c);
+
+                    tempEnd = new ArrayList<>();
+                    tempEnd.add(r + 1); tempEnd.add(c + 1);
+
+                    moves.add(new Move(tempStart, tempEnd, true));
                 }
             }
         }

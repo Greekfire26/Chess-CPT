@@ -11,6 +11,8 @@ public class Move {
     public int endCol;
     private String movedPiece;
     private String capturedPiece;
+    public boolean pawnPromotion;
+    public static boolean isEnPassantMove;
     private int moveID;
 
     private HashMap<String, Integer> ranksToRows = new HashMap();
@@ -23,6 +25,28 @@ public class Move {
         endRow = endSq.get(0); endCol = endSq.get(1);
         movedPiece = chessGame.board[startRow][startCol];
         capturedPiece = chessGame.board[endRow][endCol];
+        pawnPromotion = (movedPiece.equals("wP") && endRow == 0) || (movedPiece.equals("bP") && endRow == 7);
+        isEnPassantMove = false;
+        if (isEnPassantMove){
+            if (movedPiece.equals("bP")){capturedPiece = "wP";}
+            else {capturedPiece = "bP";}
+        }
+        moveID = startRow * 1000 + startCol * 100 + endRow * 10 + endCol;
+
+        fillReferenceTables();
+    }
+
+    public Move(ArrayList<Integer> startSq, ArrayList<Integer> endSq, boolean enPassant){
+        startRow = startSq.get(0); startCol = startSq.get(1);
+        endRow = endSq.get(0); endCol = endSq.get(1);
+        movedPiece = chessGame.board[startRow][startCol];
+        capturedPiece = chessGame.board[endRow][endCol];
+        pawnPromotion = (movedPiece.equals("wP") && endRow == 0) || (movedPiece.equals("bP") && endRow == 7);
+        isEnPassantMove = enPassant;
+        if (isEnPassantMove){
+            if (movedPiece.equals("bP")){capturedPiece = "wP";}
+            else {capturedPiece = "bP";}
+        }
         moveID = startRow * 1000 + startCol * 100 + endRow * 10 + endCol;
 
         fillReferenceTables();
@@ -43,6 +67,23 @@ public class Move {
             chessGame.bKingLoc[0] = move.endRow;
             chessGame.bKingLoc[1] = move.endCol;
         }
+
+        if (move.pawnPromotion){
+            chessGame.board[move.endRow][move.endCol] = move.movedPiece.charAt(0) + "Q";
+        }
+
+        if (move.isEnPassantMove){
+            chessGame.board[move.startRow][move.endCol] = "--";
+        }
+
+        if (move.movedPiece.charAt(1) == 'P' && Math.abs(move.startRow - move.endRow) == 2){
+            chessGame.enpassantPossible.clear();
+            chessGame.enpassantPossible.add((move.startRow + move.endRow) / 2 );
+            chessGame.enpassantPossible.add(move.startCol);
+        }
+        else {
+            chessGame.enpassantPossible.clear();
+        }
     }
 
     public static void undoMove(){
@@ -61,6 +102,19 @@ public class Move {
             else if (move.movedPiece.equals("bK")){
                 chessGame.bKingLoc[0] = move.startRow;
                 chessGame.bKingLoc[1] = move.startCol;
+            }
+
+            if (move.isEnPassantMove){
+                chessGame.board[move.endRow][move.endCol] = "--";
+                chessGame.board[move.endRow][move.endCol] = move.capturedPiece;
+
+                chessGame.enpassantPossible.clear();
+                chessGame.enpassantPossible.add(move.endRow);
+                chessGame.enpassantPossible.add(move.endCol);
+            }
+
+            if (move.movedPiece.charAt((1)) == 'P' && Math.abs(move.startRow - move.endRow) == 2){
+                chessGame.enpassantPossible.clear();
             }
         }
     }
