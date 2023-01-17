@@ -1,5 +1,6 @@
 package Chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,6 +14,8 @@ public class Move {
     private String capturedPiece;
     public boolean pawnPromotion;
     public static boolean isEnPassantMove;
+    public static castleRights currentCastlingRight = new castleRights(true, true, true, true);
+    public static ArrayList<castleRights> castleRightsLog = new ArrayList<>();
     private int moveID;
 
     private HashMap<String, Integer> ranksToRows = new HashMap();
@@ -33,6 +36,7 @@ public class Move {
         }
         moveID = startRow * 1000 + startCol * 100 + endRow * 10 + endCol;
 
+        castleRightsLog.add(new castleRights(currentCastlingRight.wks, currentCastlingRight.wqs, currentCastlingRight.bks, currentCastlingRight.bqs));
         fillReferenceTables();
     }
 
@@ -49,6 +53,7 @@ public class Move {
         }
         moveID = startRow * 1000 + startCol * 100 + endRow * 10 + endCol;
 
+        castleRightsLog.add(new castleRights(currentCastlingRight.wks, currentCastlingRight.wqs, currentCastlingRight.bks, currentCastlingRight.bqs));
         fillReferenceTables();
     }
 
@@ -84,6 +89,9 @@ public class Move {
         else {
             chessGame.enpassantPossible.clear();
         }
+
+        updateCastleRights(move);
+        castleRightsLog.add(new castleRights(currentCastlingRight.wks, currentCastlingRight.wqs, currentCastlingRight.bks, currentCastlingRight.bqs));
     }
 
     public static void undoMove(){
@@ -115,6 +123,38 @@ public class Move {
 
             if (move.movedPiece.charAt((1)) == 'P' && Math.abs(move.startRow - move.endRow) == 2){
                 chessGame.enpassantPossible.clear();
+            }
+            castleRightsLog.remove(castleRightsLog.size() - 1);
+        }
+    }
+
+    public static void updateCastleRights(Move move){
+        if (move.movedPiece.equals("wK")){
+            currentCastlingRight.wks = false;
+            currentCastlingRight.wqs = false;
+        }
+        else if (move.movedPiece.equals("bK")){
+            currentCastlingRight.bks = false;
+            currentCastlingRight.bqs = false;
+        }
+        else if (move.movedPiece.equals("wR")){
+            if (move.startRow == 7){
+                if (move.startCol == 0){
+                    currentCastlingRight.wqs = false;
+                }
+                else if (move.startCol == 7){
+                    currentCastlingRight.wks = false;
+                }
+            }
+        }
+        else if (move.movedPiece.equals("bR")){
+            if (move.startRow == 0){
+                if (move.startCol == 0){
+                    currentCastlingRight.bqs = false;
+                }
+                else if (move.startCol == 7){
+                    currentCastlingRight.bks = false;
+                }
             }
         }
     }

@@ -57,4 +57,26 @@ public class GUI {
             }
         }
     }
+
+    public static void gameoverMessage(){
+        String message = "";
+        if (chessGame.checkmate){
+            if (!chessGame.whiteToMove){
+                message = "White Wins!\nWhite has won " + chessGame.wins + " times";
+            }
+            else if (chessGame.whiteToMove){
+                message = "Black Wins!\nBlack has won " + chessGame.wins + " times";
+            }
+        }
+        else if (chessGame.stalemate){
+            message = "Stalemate!\nThat's a tie!";
+        }
+        JLabel winLabel = new JLabel(message);
+        frame.add(winLabel);
+        winLabel.setBounds(100, 300, winLabel.getPreferredSize().width, winLabel.getPreferredSize().height);
+
+        JLabel playAgainLabel = new JLabel("Press 'P' to play again");
+        frame.add(playAgainLabel);
+        winLabel.setBounds(100, 500, playAgainLabel.getPreferredSize().width, playAgainLabel.getPreferredSize().height);
+    }
 }
