@@ -93,7 +93,7 @@ public class chessGame {
                         }
                         if (!moveMade) {
                             clicks.clear();
-                            clicks.add(selected_square);
+                            selected_square.clear();
                         }
                     }
 
@@ -116,6 +116,7 @@ public class chessGame {
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == 'p' && (checkmate || stalemate)){
+                    GUI.frame.dispose();
                     new GUI();
                 }
             }
