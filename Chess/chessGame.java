@@ -2,6 +2,8 @@ package Chess;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -108,6 +110,20 @@ public class chessGame {
                     }
                 }
             }
+        });
+
+        GUI.frame.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyChar() == 'p' && (checkmate || stalemate)){
+                    new GUI();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+            @Override
+            public void keyReleased(KeyEvent e) {}
         });
     }
 

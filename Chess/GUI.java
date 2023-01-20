@@ -62,21 +62,28 @@ public class GUI {
         String message = "";
         if (chessGame.checkmate){
             if (!chessGame.whiteToMove){
-                message = "White Wins!\nWhite has won " + chessGame.wins + " times";
+                message = "White Wins! White has won " + chessGame.wins + " time(s)";
             }
             else if (chessGame.whiteToMove){
-                message = "Black Wins!\nBlack has won " + chessGame.wins + " times";
+                message = "Black Wins! Black has won " + chessGame.wins + " time(s)";
             }
         }
         else if (chessGame.stalemate){
-            message = "Stalemate!\nThat's a tie!";
+            message = "Stalemate!\n That's a tie!";
         }
-        JLabel winLabel = new JLabel(message);
-        frame.add(winLabel);
-        winLabel.setBounds(100, 300, winLabel.getPreferredSize().width, winLabel.getPreferredSize().height);
+
+        JLabel endLabel = new JLabel(message);
+        endLabel.setForeground(Color.RED);
+        endLabel.setFont(new Font("Verdana", Font.BOLD, 24));
+        panel.add(endLabel);
+        endLabel.setBounds(125, 320, endLabel.getPreferredSize().width, endLabel.getPreferredSize().height);
+        panel.setComponentZOrder(endLabel, 0);
 
         JLabel playAgainLabel = new JLabel("Press 'P' to play again");
-        frame.add(playAgainLabel);
-        winLabel.setBounds(100, 500, playAgainLabel.getPreferredSize().width, playAgainLabel.getPreferredSize().height);
+        playAgainLabel.setForeground(Color.RED);
+        playAgainLabel.setFont(new Font("Verdana", Font.BOLD, 24));
+        panel.add(playAgainLabel);
+        playAgainLabel.setBounds(240, 400, playAgainLabel.getPreferredSize().width, playAgainLabel.getPreferredSize().height);
+        panel.setComponentZOrder(playAgainLabel, 1);
     }
 }
