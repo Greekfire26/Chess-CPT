@@ -9,7 +9,7 @@ public class cptMain {
             @Override
             public void run() {
                 new GUI();
-            }
+            } // create a new GUI object
         });
     }
 }
